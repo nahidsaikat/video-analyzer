@@ -14,7 +14,8 @@ def sqnd_sqs_message_task(video):
     try:
         data = {
             'location': video.file_location.url,
-            'file_name': video.file_location.name
+            'file_name': video.file_location.name,
+            'video_id': str(video.id)
         }
         response = queue.send_message(
             MessageBody=json.dumps(data),
