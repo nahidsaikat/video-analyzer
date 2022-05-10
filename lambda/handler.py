@@ -1,21 +1,23 @@
 import io
 import boto3
+import json
 
 
 def handler(event, context):
     for record in event['Records']:
         import cv2
 
+        data = json.loads(record['body'])
         def video_duration(video_path):
             cap = cv2.VideoCapture(video_path)
             fps = cap.get(cv2.CAP_PROP_FPS)
             num_frames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
             duration_sec = int(num_frames / fps)
             return duration_sec
-        duration = video_duration(record['location'])
+        duration = video_duration(data['location'])
 
         bucket_name = 'srawvideo'
-        file_name = event['file_name']
+        file_name = data['file_name']
         file = io.BytesIO(bytes(str(duration), encoding='utf-8'))
         s3 = boto3.resource('s3')
         bucket = s3.Bucket(bucket_name)
